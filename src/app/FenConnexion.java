@@ -1,7 +1,5 @@
 package app;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 
 public class FenConnexion extends JFrame {
@@ -14,6 +12,7 @@ public class FenConnexion extends JFrame {
 		super();
 		build();
 		setContentPane(buildComponent());
+		createInteractions();
 		setVisible(true);
 	}
 	
@@ -60,16 +59,10 @@ public class FenConnexion extends JFrame {
 	}
 	
 	private void createInteractions(){
-		but1.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				//LinkSQL.getInstance().connexionServeur(textf1.getText(),textf2.getPassword());
-				SwingUtilities.invokeLater(new Runnable(){
-					public void run(){
-						new FenetrePrincipale();
-					}
-				});
-			}
-		}
+		but1.addActionListener(e -> {
+            LinkSQL.getInstance().connexionServeur(textf1.getText(),String.valueOf(textf2.getPassword()));
+            SwingUtilities.invokeLater(FenetrePrincipale::new);
+        }
 		);
 	}
 	
