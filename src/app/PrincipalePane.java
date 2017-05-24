@@ -21,7 +21,7 @@ public class PrincipalePane extends JPanel {
         buildPanel();
     }
 
-    private void initPanel(){
+    private void initPanel() {
         data = new Object[][]{
                 {
                         "Salut", "ceci", "est un test"
@@ -40,7 +40,6 @@ public class PrincipalePane extends JPanel {
     }
 
     private void buildPanel() {
-        BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
         setLayout(new BorderLayout());
 
         JPanel tableContainer = new JPanel();
@@ -50,14 +49,14 @@ public class PrincipalePane extends JPanel {
 
         JPanel requestContainer = new JPanel();
         requestContainer.setLayout(new BoxLayout(requestContainer, BoxLayout.X_AXIS));
-        requestContainer.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
+        requestContainer.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         requestContainer.add(champRequete);
         requestContainer.add(executeRequete);
 
 
         champRequete.setColumns(20);
-        setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        add(requestContainer,BorderLayout.NORTH);
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        add(requestContainer, BorderLayout.NORTH);
         add(tableContainer, BorderLayout.CENTER);
     }
 }
