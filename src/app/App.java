@@ -1,5 +1,7 @@
 package app;
 
+import javax.swing.*;
+
 /**
  * App class
  * Created by Thierry
@@ -7,6 +9,6 @@ package app;
  */
 public class App {
     public static void main(String[] args){
-
+        SwingUtilities.invokeLater(FenetrePrincipale::new);
     }
 }
