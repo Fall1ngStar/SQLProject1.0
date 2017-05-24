@@ -41,13 +41,23 @@ public class PrincipalePane extends JPanel {
 
     private void buildPanel() {
         BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
-        setLayout(layout    );
+        setLayout(new BorderLayout());
+
+        JPanel tableContainer = new JPanel();
+        tableContainer.setLayout(new BorderLayout());
+        tableContainer.add(resultatRequete.getTableHeader(), BorderLayout.PAGE_START);
+        tableContainer.add(resultatRequete, BorderLayout.CENTER);
+
+        JPanel requestContainer = new JPanel();
+        requestContainer.setLayout(new BoxLayout(requestContainer, BoxLayout.X_AXIS));
+        requestContainer.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
+        requestContainer.add(champRequete);
+        requestContainer.add(executeRequete);
+
 
         champRequete.setColumns(20);
         setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        add(champRequete);
-        add(Box.createRigidArea(new Dimension(40,40)));
-        add(executeRequete);
-        add(resultatRequete);
+        add(requestContainer,BorderLayout.NORTH);
+        add(tableContainer, BorderLayout.CENTER);
     }
 }
