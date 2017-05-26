@@ -18,7 +18,8 @@ public class FenetrePrincipale extends JFrame {
     private void build() {
         setTitle("SQL interface");
         setSize(1280, 720);
-        setContentPane(new PrincipalePane());
+        //setContentPane(new PrincipalePane());
+        setContentPane(new TableListPanel());
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
