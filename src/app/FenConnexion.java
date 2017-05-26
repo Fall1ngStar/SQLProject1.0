@@ -2,6 +2,8 @@ package app;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 
 
@@ -23,7 +25,7 @@ public class FenConnexion extends JFrame {
     public void build() {
 
         setTitle("Connexion");
-        setSize(350, 200);
+        setSize(400, 200);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setLocationRelativeTo(null);
@@ -66,39 +68,36 @@ public class FenConnexion extends JFrame {
         pan.setLayout(new BorderLayout());
         pan.add(main, BorderLayout.CENTER);
         pan.add(errorOutput, BorderLayout.SOUTH);
+
         return pan;
     }
 
     private void createInteractions() {
-        connexion.addActionListener(e -> new Thread(() -> {
+        connexion.addActionListener(e -> login());
+
+        mdp.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+                    login();
+                }
+                super.keyPressed(e);
+            }
+        });
+    }
+
+    private void login() {
+        new Thread(() -> {
             try {
                 connexion.setEnabled(false);
                 errorOutput.setText("Connexion ...");
                 LinkSQL.getInstance().connexionServeur(identifiant.getText(), String.valueOf(mdp.getPassword()));
                 SwingUtilities.invokeLater(FenetrePrincipale::new);
-                closeWindow();
+                dispose();
             } catch (SQLException e1) {
                 errorOutput.setText(e1.getMessage());
                 connexion.setEnabled(true);
             }
-        }).start()
-        );
+        }).start();
     }
-
-    public JTextField getIdentifiantField() {
-        return identifiant;
-    }
-
-    public JTextField getPasswordField() {
-        return mdp;
-    }
-
-    public JButton getConnexionButton() {
-        return connexion;
-    }
-
-    public void closeWindow(){
-        this.dispose();
-    }
-
 }

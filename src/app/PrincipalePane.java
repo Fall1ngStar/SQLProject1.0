@@ -18,8 +18,6 @@ public class PrincipalePane extends JPanel {
     JTextField champRequete;
     JButton executeRequete;
     JTable resultatRequete;
-    Object[][] data;
-    String[] cols;
 
     public PrincipalePane() {
         initPanel();
@@ -28,32 +26,16 @@ public class PrincipalePane extends JPanel {
     }
 
     private void initPanel() {
-        data = new Object[][]{
-                {
-                        "Salut", "ceci", "est un test"
-                },
-                {
-                        "J'aime", "les", "nouilles"
-                }
-        };
-        List<Object[]> dat2 = new ArrayList<>();
-        dat2.add(new Object[]{"Salut", "ceci", "est un test"});
-        cols = new String[]{
-                "A", "B", "C"
-        };
-
         champRequete = new JTextField();
         executeRequete = new JButton("Executer la requête");
-        resultatRequete = new JTable(new SQLTableModel(dat2, cols));
+        resultatRequete = new JTable(new SQLTableModel());
     }
 
     private void buildPanel() {
         setLayout(new BorderLayout());
 
-        JPanel tableContainer = new JPanel();
-        tableContainer.setLayout(new BorderLayout());
-        tableContainer.add(resultatRequete.getTableHeader(), BorderLayout.PAGE_START);
-        tableContainer.add(resultatRequete, BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(resultatRequete);
+        resultatRequete.setFillsViewportHeight(true);
 
         JPanel requestContainer = new JPanel();
         requestContainer.setLayout(new BoxLayout(requestContainer, BoxLayout.X_AXIS));
@@ -65,12 +47,12 @@ public class PrincipalePane extends JPanel {
         champRequete.setColumns(20);
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(requestContainer, BorderLayout.NORTH);
-        add(tableContainer, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER);
     }
 
     private void buildInteractions() {
         executeRequete.addActionListener((e) -> {
-            ResultSet set = LinkSQL.getInstance().executeRequete(champRequete.getText());
+            ResultSet set = LinkSQL.getInstance().selectRequete(champRequete.getText());
             try {
                 java.util.List<Object[]> data = toObjectList(set);
                 Object[] names = new Object[set.getMetaData().getColumnCount()];
@@ -79,7 +61,7 @@ public class PrincipalePane extends JPanel {
                 }
                 displayData(data, names);
             } catch (SQLException e1) {
-                e1.printStackTrace();
+                System.out.println(e1.getMessage());
             }
         });
     }
@@ -101,14 +83,6 @@ public class PrincipalePane extends JPanel {
         return result;
     }
 
-    private Object[][] toObjectArray(java.util.List<Object[]> liste) {
-        Object[][] result = new Object[liste.size()][liste.get(0).length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = liste.get(i);
-        }
-        return result;
-    }
-
     private void displayData(List<Object[]> data, Object[] names) {
         for (int i = 0; i < resultatRequete.getColumnCount(); i++) {
             resultatRequete.removeColumn(resultatRequete.getColumnModel().getColumn(i));
@@ -119,11 +93,6 @@ public class PrincipalePane extends JPanel {
             resultatRequete.addColumn(tc);
         }
         resultatRequete.removeColumn(resultatRequete.getColumnModel().getColumn(0));
-
-        for (int i = 0; i < resultatRequete.getModel().getRowCount(); i++) {
-            resultatRequete.getModel();
-        }
-
-        ((SQLTableModel)resultatRequete.getModel()).setData(data);
+        ((SQLTableModel) resultatRequete.getModel()).setData(data);
     }
 }

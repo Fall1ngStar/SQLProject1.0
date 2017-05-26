@@ -8,7 +8,7 @@ import javax.swing.*;
  * 24/05/2017
  */
 public class App {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         SwingUtilities.invokeLater(FenConnexion::new);
     }
 }

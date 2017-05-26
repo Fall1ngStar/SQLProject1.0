@@ -3,6 +3,7 @@ package app;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * Created by Thierry
  * 24/05/2017
  */
-public class SQLTableModel extends AbstractTableModel implements TableModel{
+public class SQLTableModel extends AbstractTableModel implements TableModel {
 
     List<Object[]> data;
     Object[] columnNames;
@@ -18,6 +19,10 @@ public class SQLTableModel extends AbstractTableModel implements TableModel{
     public SQLTableModel(List<Object[]> data, Object[] columnNames) {
         this.data = data;
         this.columnNames = columnNames;
+    }
+
+    public SQLTableModel() {
+        this(new ArrayList<>(), new Object[]{});
     }
 
     @Override
@@ -32,7 +37,7 @@ public class SQLTableModel extends AbstractTableModel implements TableModel{
 
     @Override
     public String getColumnName(int columnIndex) {
-        return (String)columnNames[columnIndex];
+        return (String) columnNames[columnIndex];
     }
 
     @Override

@@ -10,13 +10,14 @@ import javax.swing.*;
 public class FenetrePrincipale extends JFrame {
 
 
-    public FenetrePrincipale(){
+    public FenetrePrincipale() {
         build();
+        setExtendedState(MAXIMIZED_BOTH);
     }
 
-    private void build(){
+    private void build() {
         setTitle("SQL interface");
-        setSize(1280,720);
+        setSize(1280, 720);
         setContentPane(new PrincipalePane());
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
