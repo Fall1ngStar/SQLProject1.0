@@ -23,6 +23,7 @@ public class LinkSQL {
     }
 
     public ResultSet selectRequete(String requete) {
+
         try {
             return stmt.executeQuery(requete);
         } catch (SQLException e) {
@@ -30,7 +31,22 @@ public class LinkSQL {
         }
         return null;
     }
+public int modifyRequete(String requete) {
+        try{
+            return stmt.executeUpdate(requete);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+}
+public boolean editRequete(String requete) {
+        try{
+            return stmt.execute(requete);
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
 
+}
     public void closeConnexion(){
         try {
             con.close();
