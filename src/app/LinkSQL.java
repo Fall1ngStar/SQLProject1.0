@@ -20,6 +20,7 @@ public class LinkSQL {
 
     public void connexionServeur(String nomUtilisateur, String MotDePasse) throws SQLException {
         con = DriverManager.getConnection("jdbc:oracle:thin:@iutdoua-oracle.univ-lyon1.fr:1521:orcl", nomUtilisateur, MotDePasse);
+        con.setAutoCommit(true);
         stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
     }
 
@@ -27,13 +28,8 @@ public class LinkSQL {
         return stmt.executeQuery(requete);
     }
 
-    public int modifyRequete(String requete) {
-        try {
-            return stmt.executeUpdate(requete);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
+    public int modifyRequete(String requete) throws SQLException{
+        return stmt.executeUpdate(requete);
     }
 
     public boolean editRequete(String requete) {

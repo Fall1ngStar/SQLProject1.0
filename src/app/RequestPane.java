@@ -48,6 +48,7 @@ public class RequestPane extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(tableResult);
         otherResult = new JTextArea();
+        otherResult.setEditable(false);
         tableResult.setFillsViewportHeight(true);
         resultContainer.add(scrollPane, TABLE);
         resultContainer.add(otherResult, OTHER);
@@ -68,12 +69,13 @@ public class RequestPane extends JPanel {
     }
 
     private void buildInteractions() {
-        executeRequete.addActionListener((e) -> search());
+        executeRequete.addActionListener((e) -> execute());
+
         champRequete.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyChar() == KeyEvent.VK_ENTER && executeRequete.isEnabled()){
-                    search();
+                    execute();
                 }
                 super.keyPressed(e);
             }
@@ -112,21 +114,50 @@ public class RequestPane extends JPanel {
         ((SQLTableModel) tableResult.getModel()).setData(data);
     }
 
-    private void search(){
+    private void execute(){
         new Thread(()->{
             executeRequete.setEnabled(false);
-            try {
-                ResultSet set = LinkSQL.getInstance().selectRequete(champRequete.getText());
-                java.util.List<Object[]> data = toObjectList(set);
-                String[] names = new String[set.getMetaData().getColumnCount()];
-                for (int i = 0; i < names.length; i++) {
-                    names[i] = set.getMetaData().getColumnName(i + 1);
+            String request = champRequete.getText();
+            if(request.length() > 0){
+                String first = request.split(" ")[0];
+                if(first.equalsIgnoreCase("select")){
+                    search(request);
                 }
-                displayData(data, names);
-            } catch (SQLException e1) {
-                System.out.println(e1.getMessage());
+                else if(first.equalsIgnoreCase("insert") || first.equalsIgnoreCase("update") || first.equalsIgnoreCase("delete")){
+                    modify(request);
+                }
+                else {
+
+                }
             }
             executeRequete.setEnabled(true);
         }).start();
+    }
+
+    private void search(String request){
+        try {
+            ((CardLayout)resultContainer.getLayout()).show(resultContainer, TABLE);
+            ResultSet set = LinkSQL.getInstance().selectRequete(request);
+            java.util.List<Object[]> data = toObjectList(set);
+            String[] names = new String[set.getMetaData().getColumnCount()];
+            for (int i = 0; i < names.length; i++) {
+                names[i] = set.getMetaData().getColumnName(i + 1);
+            }
+            displayData(data, names);
+        } catch (SQLException e1) {
+            ((CardLayout)resultContainer.getLayout()).show(resultContainer, OTHER);
+            otherResult.append(e1.getMessage() + "\n\n");
+        }
+    }
+
+    private void modify(String request){
+        try{
+            ((CardLayout)resultContainer.getLayout()).show(resultContainer, OTHER);
+            int nbMModified = LinkSQL.getInstance().modifyRequete(request);
+            otherResult.append("Nombre de lignes modifiées : " + nbMModified + "\n\n");
+        } catch (SQLException e){
+            ((CardLayout)resultContainer.getLayout()).show(resultContainer, OTHER);
+            otherResult.append(e.getMessage() + "\n\n");
+        }
     }
 }
