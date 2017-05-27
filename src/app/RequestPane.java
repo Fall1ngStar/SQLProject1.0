@@ -19,7 +19,13 @@ public class RequestPane extends JPanel {
 
     JTextField champRequete;
     JButton executeRequete;
-    JTable resultatRequete;
+
+
+    JPanel resultContainer;
+    JTable tableResult;
+    JTextArea otherResult;
+
+    final String TABLE = "Table display", OTHER = "Text display";
 
     public RequestPane (){
         initPanel();
@@ -30,16 +36,23 @@ public class RequestPane extends JPanel {
     private void initPanel() {
         champRequete = new JTextField();
         executeRequete = new JButton("Executer la requête");
-        resultatRequete = new JTable(new SQLTableModel());
+        tableResult = new JTable(new SQLTableModel());
     }
 
     private void buildPanel() {
         setLayout(new BorderLayout());
 
-        //resultatRequete.setColumnModel(new SQLColumnModel());
+        //tableResult.setColumnModel(new SQLColumnModel());
+        resultContainer = new JPanel();
+        resultContainer.setLayout(new CardLayout());
 
-        JScrollPane scrollPane = new JScrollPane(resultatRequete);
-        resultatRequete.setFillsViewportHeight(true);
+        JScrollPane scrollPane = new JScrollPane(tableResult);
+        otherResult = new JTextArea();
+        tableResult.setFillsViewportHeight(true);
+        resultContainer.add(scrollPane, TABLE);
+        resultContainer.add(otherResult, OTHER);
+        ((CardLayout)resultContainer.getLayout()).show(resultContainer, TABLE);
+
 
         JPanel requestContainer = new JPanel();
         requestContainer.setLayout(new BoxLayout(requestContainer, BoxLayout.X_AXIS));
@@ -51,7 +64,7 @@ public class RequestPane extends JPanel {
         champRequete.setColumns(20);
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(requestContainer, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
+        add(resultContainer, BorderLayout.CENTER);
     }
 
     private void buildInteractions() {
@@ -85,24 +98,25 @@ public class RequestPane extends JPanel {
     }
 
     private void displayData(List<Object[]> data, String[] names) {
-        for (int i = 0; i < resultatRequete.getColumnCount(); i++) {
-            resultatRequete.removeColumn(resultatRequete.getColumnModel().getColumn(i));
-        }
+        int previousColumn = tableResult.getColumnCount();
         for (int i = 0; i < names.length; i++) {
             TableColumn tc = new TableColumn(i);
             tc.setHeaderValue(names[i]);
-            resultatRequete.addColumn(tc);
+            tableResult.addColumn(tc);
         }
-        resultatRequete.removeColumn(resultatRequete.getColumnModel().getColumn(0));
-        //((SQLColumnModel)resultatRequete.getColumnModel()).setColumns(names);
-        ((SQLTableModel) resultatRequete.getModel()).setData(data);
+        for (int i = 0; i < previousColumn; i++) {
+            tableResult.removeColumn(tableResult.getColumnModel().getColumn(0));
+        }
+        //tableResult.removeColumn(tableResult.getColumnModel().getColumn(0));
+        //((SQLColumnModel)tableResult.getColumnModel()).setColumns(names);
+        ((SQLTableModel) tableResult.getModel()).setData(data);
     }
 
     private void search(){
         new Thread(()->{
             executeRequete.setEnabled(false);
-            ResultSet set = LinkSQL.getInstance().selectRequete(champRequete.getText());
             try {
+                ResultSet set = LinkSQL.getInstance().selectRequete(champRequete.getText());
                 java.util.List<Object[]> data = toObjectList(set);
                 String[] names = new String[set.getMetaData().getColumnCount()];
                 for (int i = 0; i < names.length; i++) {

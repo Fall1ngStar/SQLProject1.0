@@ -26,9 +26,9 @@ public class TableListPanel extends JPanel {
     }
 
     private List<String> getTablesNames() {
-        ResultSet data = LinkSQL.getInstance().selectRequete("SELECT * FROM user_tables");
         List<String> names = new ArrayList<>();
         try {
+            ResultSet data = LinkSQL.getInstance().selectRequete("SELECT * FROM user_tables");
             while (data.next()) {
                 names.add(data.getString(1));
             }

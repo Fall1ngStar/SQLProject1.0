@@ -1,4 +1,5 @@
-package app; /**
+package app;
+/**
  * Created by Bloody on 24/05/2017.
  */
 
@@ -22,32 +23,30 @@ public class LinkSQL {
         stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
     }
 
-    public ResultSet selectRequete(String requete) {
-
-        try {
-            return stmt.executeQuery(requete);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public ResultSet selectRequete(String requete) throws SQLException {
+        return stmt.executeQuery(requete);
     }
-public int modifyRequete(String requete) {
-        try{
+
+    public int modifyRequete(String requete) {
+        try {
             return stmt.executeUpdate(requete);
         } catch (SQLException e) {
             e.printStackTrace();
+            return 0;
         }
-}
-public boolean editRequete(String requete) {
-        try{
+    }
+
+    public boolean editRequete(String requete) {
+        try {
             return stmt.execute(requete);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
 
-}
-    public void closeConnexion(){
+    }
+
+    public void closeConnexion() {
         try {
             con.close();
         } catch (SQLException e) {
