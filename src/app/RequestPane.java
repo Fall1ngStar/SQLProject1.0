@@ -9,17 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * PrincipalePane class
+ * RequestPane class
  * Created by Thierry
  * 24/05/2017
  */
-public class PrincipalePane extends JPanel {
+public class RequestPane extends JPanel {
 
     JTextField champRequete;
     JButton executeRequete;
     JTable resultatRequete;
 
-    public PrincipalePane() {
+    public RequestPane (){
         initPanel();
         buildPanel();
         buildInteractions();
