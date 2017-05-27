@@ -28,18 +28,12 @@ public class LinkSQL {
         return stmt.executeQuery(requete);
     }
 
-    public int modifyRequete(String requete) throws SQLException{
+    public int modifyRequete(String requete) throws SQLException {
         return stmt.executeUpdate(requete);
     }
 
-    public boolean editRequete(String requete) {
-        try {
-            return stmt.execute(requete);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-
+    public boolean editRequete(String requete) throws SQLException {
+        return stmt.execute(requete);
     }
 
     public void closeConnexion() {

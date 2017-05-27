@@ -27,7 +27,7 @@ public class RequestPane extends JPanel {
 
     final String TABLE = "Table display", OTHER = "Text display";
 
-    public RequestPane (){
+    public RequestPane() {
         initPanel();
         buildPanel();
         buildInteractions();
@@ -52,7 +52,7 @@ public class RequestPane extends JPanel {
         tableResult.setFillsViewportHeight(true);
         resultContainer.add(scrollPane, TABLE);
         resultContainer.add(otherResult, OTHER);
-        ((CardLayout)resultContainer.getLayout()).show(resultContainer, TABLE);
+        ((CardLayout) resultContainer.getLayout()).show(resultContainer, TABLE);
 
 
         JPanel requestContainer = new JPanel();
@@ -74,7 +74,7 @@ public class RequestPane extends JPanel {
         champRequete.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyChar() == KeyEvent.VK_ENTER && executeRequete.isEnabled()){
+                if (e.getKeyChar() == KeyEvent.VK_ENTER && executeRequete.isEnabled()) {
                     execute();
                 }
                 super.keyPressed(e);
@@ -114,29 +114,27 @@ public class RequestPane extends JPanel {
         ((SQLTableModel) tableResult.getModel()).setData(data);
     }
 
-    private void execute(){
-        new Thread(()->{
+    private void execute() {
+        new Thread(() -> {
             executeRequete.setEnabled(false);
             String request = champRequete.getText();
-            if(request.length() > 0){
+            if (request.length() > 0) {
                 String first = request.split(" ")[0];
-                if(first.equalsIgnoreCase("select")){
+                if (first.equalsIgnoreCase("select")) {
                     search(request);
-                }
-                else if(first.equalsIgnoreCase("insert") || first.equalsIgnoreCase("update") || first.equalsIgnoreCase("delete")){
+                } else if (first.equalsIgnoreCase("insert") || first.equalsIgnoreCase("update") || first.equalsIgnoreCase("delete")) {
                     modify(request);
-                }
-                else {
-
+                } else {
+                    otherRequest(request);
                 }
             }
             executeRequete.setEnabled(true);
         }).start();
     }
 
-    private void search(String request){
+    private void search(String request) {
         try {
-            ((CardLayout)resultContainer.getLayout()).show(resultContainer, TABLE);
+            ((CardLayout) resultContainer.getLayout()).show(resultContainer, TABLE);
             ResultSet set = LinkSQL.getInstance().selectRequete(request);
             java.util.List<Object[]> data = toObjectList(set);
             String[] names = new String[set.getMetaData().getColumnCount()];
@@ -145,18 +143,29 @@ public class RequestPane extends JPanel {
             }
             displayData(data, names);
         } catch (SQLException e1) {
-            ((CardLayout)resultContainer.getLayout()).show(resultContainer, OTHER);
+            ((CardLayout) resultContainer.getLayout()).show(resultContainer, OTHER);
             otherResult.append(e1.getMessage() + "\n\n");
         }
     }
 
-    private void modify(String request){
-        try{
-            ((CardLayout)resultContainer.getLayout()).show(resultContainer, OTHER);
+    private void modify(String request) {
+        try {
+            ((CardLayout) resultContainer.getLayout()).show(resultContainer, OTHER);
             int nbMModified = LinkSQL.getInstance().modifyRequete(request);
             otherResult.append("Nombre de lignes modifiées : " + nbMModified + "\n\n");
-        } catch (SQLException e){
-            ((CardLayout)resultContainer.getLayout()).show(resultContainer, OTHER);
+        } catch (SQLException e) {
+            ((CardLayout) resultContainer.getLayout()).show(resultContainer, OTHER);
+            otherResult.append(e.getMessage() + "\n\n");
+        }
+    }
+
+    private void otherRequest(String request) {
+        try {
+            ((CardLayout) resultContainer.getLayout()).show(resultContainer, OTHER);
+            boolean result = LinkSQL.getInstance().editRequete(request);
+            otherResult.append(result ? "Requête executée avec succès\n\n" : "La requête a échouée \n\n");
+        } catch (SQLException e) {
+            ((CardLayout) resultContainer.getLayout()).show(resultContainer, OTHER);
             otherResult.append(e.getMessage() + "\n\n");
         }
     }
