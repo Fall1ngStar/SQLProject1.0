@@ -3,6 +3,8 @@ package app;
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ public class RequestPane extends JPanel {
     private void buildPanel() {
         setLayout(new BorderLayout());
 
+        //resultatRequete.setColumnModel(new SQLColumnModel());
+
         JScrollPane scrollPane = new JScrollPane(resultatRequete);
         resultatRequete.setFillsViewportHeight(true);
 
@@ -51,17 +55,14 @@ public class RequestPane extends JPanel {
     }
 
     private void buildInteractions() {
-        executeRequete.addActionListener((e) -> {
-            ResultSet set = LinkSQL.getInstance().selectRequete(champRequete.getText());
-            try {
-                java.util.List<Object[]> data = toObjectList(set);
-                Object[] names = new Object[set.getMetaData().getColumnCount()];
-                for (int i = 0; i < names.length; i++) {
-                    names[i] = set.getMetaData().getColumnName(i + 1);
+        executeRequete.addActionListener((e) -> search());
+        champRequete.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyChar() == KeyEvent.VK_ENTER && executeRequete.isEnabled()){
+                    search();
                 }
-                displayData(data, names);
-            } catch (SQLException e1) {
-                System.out.println(e1.getMessage());
+                super.keyPressed(e);
             }
         });
     }
@@ -83,7 +84,7 @@ public class RequestPane extends JPanel {
         return result;
     }
 
-    private void displayData(List<Object[]> data, Object[] names) {
+    private void displayData(List<Object[]> data, String[] names) {
         for (int i = 0; i < resultatRequete.getColumnCount(); i++) {
             resultatRequete.removeColumn(resultatRequete.getColumnModel().getColumn(i));
         }
@@ -93,6 +94,25 @@ public class RequestPane extends JPanel {
             resultatRequete.addColumn(tc);
         }
         resultatRequete.removeColumn(resultatRequete.getColumnModel().getColumn(0));
+        //((SQLColumnModel)resultatRequete.getColumnModel()).setColumns(names);
         ((SQLTableModel) resultatRequete.getModel()).setData(data);
+    }
+
+    private void search(){
+        new Thread(()->{
+            executeRequete.setEnabled(false);
+            ResultSet set = LinkSQL.getInstance().selectRequete(champRequete.getText());
+            try {
+                java.util.List<Object[]> data = toObjectList(set);
+                String[] names = new String[set.getMetaData().getColumnCount()];
+                for (int i = 0; i < names.length; i++) {
+                    names[i] = set.getMetaData().getColumnName(i + 1);
+                }
+                displayData(data, names);
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+            }
+            executeRequete.setEnabled(true);
+        }).start();
     }
 }

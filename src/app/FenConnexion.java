@@ -78,7 +78,7 @@ public class FenConnexion extends JFrame {
         mdp.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+                if (e.getKeyChar() == KeyEvent.VK_ENTER && connexion.isEnabled()) {
                     login();
                 }
                 super.keyPressed(e);

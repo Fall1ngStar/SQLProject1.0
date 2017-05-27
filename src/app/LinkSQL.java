@@ -19,7 +19,7 @@ public class LinkSQL {
 
     public void connexionServeur(String nomUtilisateur, String MotDePasse) throws SQLException {
         con = DriverManager.getConnection("jdbc:oracle:thin:@iutdoua-oracle.univ-lyon1.fr:1521:orcl", nomUtilisateur, MotDePasse);
-        stmt = con.createStatement();
+        stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
     }
 
     public ResultSet selectRequete(String requete) {
@@ -29,5 +29,13 @@ public class LinkSQL {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void closeConnexion(){
+        try {
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,8 @@
 package app;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * FenetrePrincipale class
@@ -24,5 +26,15 @@ public class FenetrePrincipale extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                LinkSQL.getInstance().closeConnexion();
+                super.windowClosing(e);
+            }
+        });
     }
+
+
 }
