@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.*;
 import java.sql.SQLException;
 
 
@@ -13,11 +14,14 @@ public class FenConnexion extends JFrame {
     private JTextField identifiant;
     private JPasswordField mdp;
     private JLabel errorOutput;
+    private JCheckBox check1;
+    private File fe;
 
     public FenConnexion() {
         super();
         build();
         setContentPane(buildComponent());
+        getPreviousLogin();
         createInteractions();
         setVisible(true);
     }
@@ -25,7 +29,7 @@ public class FenConnexion extends JFrame {
     public void build() {
 
         setTitle("Connexion");
-        setSize(400, 200);
+        setSize(400, 280);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setLocationRelativeTo(null);
@@ -39,6 +43,17 @@ public class FenConnexion extends JFrame {
 
         JPanel haut = new JPanel();
 
+        JPanel ligne1 = new JPanel(); //ligne1, ligne2 et ligne3 sont les cases de mon BoxLayout
+        ligne1.setLayout(new FlowLayout());
+
+        JPanel ligne2 = new JPanel();
+        ligne2.setLayout(new FlowLayout());
+
+        JPanel ligne3 = new JPanel();
+        ligne3.setLayout(new FlowLayout());
+
+        check1 = new JCheckBox("Mémoriser mon compte : ", true);
+
         JLabel lab1 = new JLabel("Nom d'utilisateur :");
         JLabel lab2 = new JLabel("Mot de passe : ");
 
@@ -48,10 +63,17 @@ public class FenConnexion extends JFrame {
         identifiant.setColumns(20);
         mdp.setColumns(20);
 
-        haut.add(lab1);
-        haut.add(identifiant);
-        haut.add(lab2);
-        haut.add(mdp);
+        ligne1.add(lab1);
+        ligne1.add(identifiant);
+
+        ligne2.add(lab2);
+        ligne2.add(mdp);
+
+        ligne3.add(check1);
+
+        haut.add(ligne1);
+        haut.add(ligne2);
+        haut.add(ligne3);
 
         JPanel bas = new JPanel();
 
@@ -84,11 +106,44 @@ public class FenConnexion extends JFrame {
                 super.keyPressed(e);
             }
         });
+
+    }
+
+    public void getPreviousLogin(){
+
+        fe = new File("DataProfile.txt");
+
+        BufferedReader buf1 = null;
+
+        try {
+            buf1 = new BufferedReader(new FileReader(fe));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if(fe.exists() && check1.isSelected()){
+            try {
+                identifiant.setText(buf1.readLine());
+                mdp.setText(buf1.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void login() {
         new Thread(() -> {
             try {
+                if(!fe.exists() && check1.isSelected()){
+                    try{
+                        PrintWriter writer = new PrintWriter("DataProfile.txt", "UTF-8");
+                        writer.println(identifiant.getText());
+                        writer.println(mdp.getPassword());
+                        writer.close();
+                    } catch (IOException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
                 connexion.setEnabled(false);
                 errorOutput.setText("Connexion ...");
                 LinkSQL.getInstance().connexionServeur(identifiant.getText(), String.valueOf(mdp.getPassword()));
