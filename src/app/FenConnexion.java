@@ -144,6 +144,10 @@ public class FenConnexion extends JFrame {
                         System.out.println(e.getMessage());
                     }
                 }
+                else if(!check1.isSelected()){
+                    fe.delete();
+                }
+                
                 connexion.setEnabled(false);
                 errorOutput.setText("Connexion ...");
                 LinkSQL.getInstance().connexionServeur(identifiant.getText(), String.valueOf(mdp.getPassword()));
