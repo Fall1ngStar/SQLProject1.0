@@ -12,16 +12,16 @@ import static java.awt.GridBagConstraints.*;
  */
 public class MainContainerPane extends JPanel {
 
-    RequestPane requestPane;
-    TableListPanel tableListPanel;
+    private RequestPane requestPane;
+    private TableListPanel tableListPanel;
 
     public MainContainerPane(){
         build();
     }
 
     private void build(){
-        requestPane = new RequestPane();
-        tableListPanel = new TableListPanel();
+        requestPane = new RequestPane(this);
+        tableListPanel = new TableListPanel(this);
         GridBagConstraints rqc = new GridBagConstraints(), tlc = new GridBagConstraints();
         rqc.anchor = LINE_END;
         tlc.anchor = LINE_START;
@@ -33,5 +33,13 @@ public class MainContainerPane extends JPanel {
         setLayout(new GridBagLayout());
         add(tableListPanel, tlc);
         add(requestPane, rqc);
+    }
+
+    public RequestPane getRequestPane() {
+        return requestPane;
+    }
+
+    public TableListPanel getTableListPanel() {
+        return tableListPanel;
     }
 }

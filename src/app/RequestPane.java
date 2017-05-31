@@ -17,20 +17,23 @@ import java.util.List;
  */
 public class RequestPane extends JPanel {
 
-    JTextField champRequete;
-    JButton executeRequete;
+    private MainContainerPane parent;
+
+    private JTextField champRequete;
+    private JButton executeRequete;
 
 
-    JPanel resultContainer;
-    JTable tableResult;
-    JTextArea otherResult;
+    private JPanel resultContainer;
+    private JTable tableResult;
+    private JTextArea otherResult;
 
-    final String TABLE = "Table display", OTHER = "Text display";
+    private final String TABLE = "Table display", OTHER = "Text display";
 
-    public RequestPane() {
+    public RequestPane(MainContainerPane parent) {
         initPanel();
         buildPanel();
         buildInteractions();
+        this.parent = parent;
     }
 
     private void initPanel() {
@@ -132,7 +135,7 @@ public class RequestPane extends JPanel {
         }).start();
     }
 
-    private void search(String request) {
+    public void search(String request) {
         try {
             ((CardLayout) resultContainer.getLayout()).show(resultContainer, TABLE);
             ResultSet set = LinkSQL.getInstance().selectRequete(request);

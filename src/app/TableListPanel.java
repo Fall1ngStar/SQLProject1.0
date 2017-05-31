@@ -9,16 +9,21 @@ import java.util.List;
 
 public class TableListPanel extends JPanel {
 
+    private MainContainerPane parent;
+
     private JList<String> liste;
 
-    public TableListPanel() {
+    public TableListPanel(MainContainerPane parent) {
         build();
+        createInterractions();
+        this.parent = parent;
     }
 
 
     private void build() {
         setLayout(new BorderLayout());
         liste = new JList<>(new SQLTableListModel(getTablesNames()));
+        liste.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
         add(liste, BorderLayout.CENTER);
         add(new JLabel("Tables"), BorderLayout.NORTH);
@@ -36,6 +41,14 @@ public class TableListPanel extends JPanel {
             e.printStackTrace();
         }
         return names;
+    }
+
+    private void createInterractions(){
+        liste.addListSelectionListener((e -> {
+            if (e.getValueIsAdjusting()) {
+                new Thread(()->parent.getRequestPane().search("SELECT * FROM " + liste.getSelectedValue())).start();
+            }
+        }));
     }
 
 }
