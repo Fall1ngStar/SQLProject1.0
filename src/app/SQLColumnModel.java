@@ -12,9 +12,9 @@ import java.util.Vector;
  */
 public class SQLColumnModel extends DefaultTableColumnModel implements TableColumnModel {
 
-    public void setColumns(String[] value){
+    public void setColumns(String[] value) {
         Vector<TableColumn> tcVector = new Vector<>();
-        for(String name : value){
+        for (String name : value) {
             TableColumn tc = new TableColumn();
             tc.setHeaderValue(name);
             tcVector.add(tc);

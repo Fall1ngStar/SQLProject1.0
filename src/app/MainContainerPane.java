@@ -15,11 +15,11 @@ public class MainContainerPane extends JPanel {
     private RequestPane requestPane;
     private TableListPanel tableListPanel;
 
-    public MainContainerPane(){
+    public MainContainerPane() {
         build();
     }
 
-    private void build(){
+    private void build() {
         requestPane = new RequestPane(this);
         tableListPanel = new TableListPanel(this);
         GridBagConstraints rqc = new GridBagConstraints(), tlc = new GridBagConstraints();

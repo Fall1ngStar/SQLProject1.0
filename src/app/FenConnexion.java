@@ -109,7 +109,7 @@ public class FenConnexion extends JFrame {
 
     }
 
-    public void getPreviousLogin(){
+    public void getPreviousLogin() {
 
         fe = new File("DataProfile.txt");
 
@@ -121,7 +121,7 @@ public class FenConnexion extends JFrame {
             e.printStackTrace();
         }
 
-        if(fe.exists() && check1.isSelected()){
+        if (fe.exists() && check1.isSelected()) {
             try {
                 identifiant.setText(buf1.readLine());
                 mdp.setText(buf1.readLine());
@@ -134,8 +134,8 @@ public class FenConnexion extends JFrame {
     private void login() {
         new Thread(() -> {
             try {
-                if(!fe.exists() && check1.isSelected()){
-                    try{
+                if (!fe.exists() && check1.isSelected()) {
+                    try {
                         PrintWriter writer = new PrintWriter("DataProfile.txt", "UTF-8");
                         writer.println(identifiant.getText());
                         writer.println(mdp.getPassword());
@@ -143,11 +143,10 @@ public class FenConnexion extends JFrame {
                     } catch (IOException e) {
                         System.out.println(e.getMessage());
                     }
-                }
-                else if(!check1.isSelected()){
+                } else if (!check1.isSelected()) {
                     fe.delete();
                 }
-                
+
                 connexion.setEnabled(false);
                 errorOutput.setText("Connexion ...");
                 LinkSQL.getInstance().connexionServeur(identifiant.getText(), String.valueOf(mdp.getPassword()));
